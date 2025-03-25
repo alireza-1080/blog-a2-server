@@ -7,6 +7,7 @@ const router = express.Router()
 router.get('/', async (req: Request, res: Response) => {
   const testData = await prisma.blogPost.findMany()
   console.log(testData)
+  res.cookie('test', 'testValue')
   res.json(testData)
 })
 
