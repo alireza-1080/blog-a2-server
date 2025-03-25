@@ -10,7 +10,7 @@ const app = express()
 
 app.use(helmet())
 app.use(cors({
-  origin: 'https://blog-a2.vercel.app',
+  origin: 'https://blog-a2.vercel.app/api',
   credentials: true
 }))
 app.use(express.json())
