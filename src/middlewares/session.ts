@@ -23,7 +23,8 @@ const session = ExpressSession({
         httpOnly: true,
         secure: true,
         sameSite:'none',
-        maxAge: 14 * 24 * 60 * 60 * 1000 // 14 days ==> ms
+        maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days ==> ms
+        domain: 'up.railway.app'
     }
 })
 

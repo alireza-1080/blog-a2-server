@@ -8,17 +8,17 @@ import cookieParser from 'cookie-parser'
 
 const app = express()
 
-app.use(helmet())
 app.use(cors({
   origin: 'https://blog-a2.vercel.app',
   credentials: true
 }))
+app.use(helmet())
+app.use(cookieParser())
+app.use(session)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(cookieParser())
 app.use(express.static('public'))
 
-app.use(session)
 
 app.get('/', (req: Request, res: Response) => {
   res.json(`Server is 🏃‍♂️‍➡️🏃‍♂️‍➡️🏃‍♂️‍➡️`)
