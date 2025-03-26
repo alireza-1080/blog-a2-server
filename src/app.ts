@@ -4,15 +4,22 @@ import cors from 'cors'
 import helmet from 'helmet'
 import apiRouter from './routes/api.js'
 import cookieParser from 'cookie-parser'
+import { CorsOptions } from 'cors'
 
 const app = express()
+const allowedOrigins = ['https://blog-a2.vercel.app', 'http://localhost:3000']
+const corsOptions: CorsOptions = {
+  origin: (origin: string | undefined, cb: (error: Error | null, allow?: boolean) => void) => {
+    if (allowedOrigins.indexOf(origin as string) !== -1) {
+      cb(null, true)
+    } else {
+      cb(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true,
+}
 
-app.use(
-  cors({
-    origin: 'https://blog-a2.vercel.app',
-    credentials: true,
-  })
-)
+app.use(cors(corsOptions))
 app.use(helmet())
 app.use(cookieParser())
 app.use(express.json())
