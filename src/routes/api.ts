@@ -12,7 +12,8 @@ router.get('/test', async (req: Request, res: Response) => {
     httpOnly: true,
     secure: true,
     sameSite: 'none',
-    maxAge: 14 * 24 * 60 * 60 * 1000
+    maxAge: 14 * 24 * 60 * 60 * 1000,
+    partitioned: true
   })
   res.json(`Session has been updated`)
 })
