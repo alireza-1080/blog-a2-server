@@ -22,7 +22,7 @@ const session = expressSession({
   cookie: {
     httpOnly: true,
     secure: true,
-    sameSite: 'strict',
+    sameSite: 'none',
     maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days per milisecond
   },
 })
