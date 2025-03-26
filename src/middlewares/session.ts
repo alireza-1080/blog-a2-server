@@ -17,7 +17,7 @@ const store = MongoStore.create({
 const session = expressSession({
   secret,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   store,
   cookie: {
     httpOnly: true,

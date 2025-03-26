@@ -5,13 +5,16 @@ import helmet from 'helmet'
 import apiRouter from './routes/api.js'
 import cookieParser from 'cookie-parser'
 import session from './middlewares/session.js'
+import lastSessionUpdate from './middlewares/lastSessionUpdate.js'
 
 const app = express()
 
-app.use(cors({
-  origin: 'https://blog-a2.vercel.app',
-  credentials: true
-}))
+app.use(
+  cors({
+    origin: 'https://blog-a2.vercel.app',
+    credentials: true,
+  })
+)
 app.use(helmet())
 app.use(cookieParser())
 app.use(express.json())
@@ -19,7 +22,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
 
 app.use(session)
-
+app.use(lastSessionUpdate)
 
 app.get('/', (req: Request, res: Response) => {
   res.json(`Server is 🏃‍♂️‍➡️🏃‍♂️‍➡️🏃‍♂️‍➡️`)
