@@ -37,8 +37,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/api', apiRouter)
 
-app.use((err: Error, req, res, next) => {
-  
+app.use((err: Error, req: Request, res: Response) => {
   // Handle multer errors
   if (err instanceof MulterError) {
     if (err.code === 'LIMIT_UNEXPECTED_FILE') {
@@ -49,13 +48,13 @@ app.use((err: Error, req, res, next) => {
     if (err.code === 'LIMIT_FILE_SIZE') {
       // Handle avatar file size limit
       if (err.field === 'avatar') {
-        res.status(400).json({error: "❌ Avatar size limit is 5MB"})
+        res.status(400).json({ error: '❌ Avatar size limit is 5MB' })
         return
       }
     }
 
     if (err.code === 'LIMIT_FILE_COUNT') {
-      res.status(400).json({error: "❌ Too many files"})
+      res.status(400).json({ error: '❌ Too many files' })
       return
     }
   }
