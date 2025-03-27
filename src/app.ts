@@ -8,7 +8,7 @@ import { CorsOptions } from 'cors'
 import { MulterError } from 'multer'
 
 const app = express()
-const allowedOrigins = ['https://blog-a2.vercel.app', 'http://localhost:3000']
+const allowedOrigins = ['https://blog-a2.vercel.app', 'http://localhost:3000', 'https://blog-a2-server.up.railway.app']
 const corsOptions: CorsOptions = {
   origin: (origin: string | undefined, cb: (error: Error | null, allow?: boolean) => void) => {
     if (!origin) {
