@@ -5,6 +5,7 @@ import hashPassword from '../utils/hashPassword.js'
 import { prisma } from '../services/prisma.service.js'
 import { Prisma } from '@prisma/client'
 import { unlink } from 'fs/promises'
+import generateToken from '../utils/generateToke.js'
 
 const createUser = async (
   req: Request<object, object, z.infer<typeof createUserSchema> & { confirmPassword: string }>,
@@ -53,7 +54,10 @@ const createUser = async (
       },
     })
 
-    console.log(user)
+    const token = generateToken(user.id)
+    console.log(token)
+
+    res.cookie('auth_token', token)
 
     res.json({ message: 'User is successfully registered', user })
   } catch (error) {
