@@ -4,8 +4,8 @@ const createUserSchema = z.object({
   username: z
     .string({ required_error: 'Username field is required', invalid_type_error: 'Username must be a string' })
     .min(5, { message: 'Username must be 5 characters at least' })
-    .max(15, { message: 'Username must be 5 characters max' })
-    .regex(/^[a-zA-Z][a-zA-z_-]*$/, {
+    .max(15, { message: 'Username must be 15 characters max' })
+    .regex(/^[a-zA-Z][a-zA-z0-9_-]*$/, {
       message: 'Username must start with a letter and contain only letters, numbers, underscores, and hyphens',
     })
     .refine((value) => !/[-_]{2,}/.test(value), { message: 'Username cannot contain consecutive special characters' })
@@ -19,7 +19,6 @@ const createUserSchema = z.object({
     .min(5, { message: 'Email is too short' })
     .max(254, { message: 'Email is too long' })
     .transform((email) => email.toLocaleLowerCase()),
-  image: z.string({ invalid_type_error: 'Image name should be a valid string' }).optional(),
   password: z
     .string({
       invalid_type_error: 'Password should ba a string',

@@ -1,9 +1,9 @@
 import e from 'express'
 import { createUser } from '../controllers/user.js'
-import userAvatarUpload from '../uploaders/userAvatarUploader.js'
+import userAvatarUploadMiddleware from '../middlewares/userAvatarUploadMiddleware.js'
 
 const router = e.Router()
 
-router.post('/create', userAvatarUpload.single('avatar'), createUser)
+router.post('/create', userAvatarUploadMiddleware, createUser)
 
 export default router
