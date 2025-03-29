@@ -6,18 +6,26 @@ import { prisma } from '../services/prisma.service.js'
 import { Prisma } from '@prisma/client'
 import { unlink } from 'fs/promises'
 
-const createUser = async (req: Request<object, object, z.infer<typeof createUserSchema>>, res: Response) => {
+const createUser = async (
+  req: Request<object, object, z.infer<typeof createUserSchema> & { confirmPassword: string }>,
+  res: Response
+) => {
   try {
-    const { username, email, password } = req.body
+    const { username, email, password, confirmPassword } = req.body
     const file = req.file
 
     const newUserSample = {
       username,
       email,
       password,
+      confirmPassword
     }
 
     const zodValidatedUser = createUserSchema.parse(newUserSample)
+
+    if (password !== confirmPassword) {
+      throw new Error("Passwords do not match")
+    }
 
     const hashedPassword = await hashPassword(password)
     zodValidatedUser.password = hashedPassword
@@ -70,6 +78,11 @@ const createUser = async (req: Request<object, object, z.infer<typeof createUser
         res.status(400).json({ error: 'Email is already taken' })
         return
       }
+    }
+
+    if (error instanceof Error) {
+      console.log(error.message)
+      res.status(400).json({error: error.message})
     }
   }
 }

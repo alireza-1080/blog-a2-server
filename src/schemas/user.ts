@@ -41,6 +41,10 @@ const createUserSchema = z.object({
     .refine((password) => !/(.)\1{2,}/.test(password), {
       message: 'Password cannot contain repeated characters (more than 2)',
     }),
+    confirmPassword: z.string({
+      invalid_type_error: 'Confirm password should ba a string',
+      required_error: 'Confirm password field is required',
+    }),
   role: z.enum(['user', 'admin']).optional().default('user'),
 })
 
