@@ -19,13 +19,13 @@ const createUser = async (
       username,
       email,
       password,
-      confirmPassword
+      confirmPassword,
     }
 
     const zodValidatedUser = createUserSchema.parse(newUserSample)
 
     if (password !== confirmPassword) {
-      throw new Error("Passwords do not match")
+      throw new Error('Passwords do not match')
     }
 
     const hashedPassword = await hashPassword(password)
@@ -57,7 +57,12 @@ const createUser = async (
     const token = generateToken(user.id)
     console.log(token)
 
-    res.cookie('auth_token', token)
+    res.cookie('auth_token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 14 * 24 * 60 * 60, // 14 Days
+    })
 
     res.json({ message: 'User is successfully registered', user })
   } catch (error) {
@@ -87,7 +92,7 @@ const createUser = async (
 
     if (error instanceof Error) {
       console.log(error.message)
-      res.status(400).json({error: error.message})
+      res.status(400).json({ error: error.message })
       return
     }
   }
