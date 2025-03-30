@@ -69,6 +69,7 @@ const createUser = async (
     // Handle zod validation errors
     if (error instanceof ZodError) {
       res.status(400).json({ error: error.issues[0].message })
+      return
     }
 
     //Handle prisma errors
@@ -87,6 +88,7 @@ const createUser = async (
     if (error instanceof Error) {
       console.log(error.message)
       res.status(400).json({error: error.message})
+      return
     }
   }
 }
