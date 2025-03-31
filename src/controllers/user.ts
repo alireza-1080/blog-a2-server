@@ -66,7 +66,7 @@ const createUser = async (
     res.cookie('auth_token', token, {
       httpOnly: true,
       secure: envLevel === 'development' ? false : true,
-      sameSite: 'none',
+      sameSite: envLevel === 'development' ? 'lax' : 'none', // 'lax' for dev, 'none' for prod
       maxAge: 14 * 24 * 60 * 60, // 14 Days
     })
 
@@ -131,7 +131,7 @@ const userLogin = async (req: Request<object, object, z.infer<typeof loginUserSc
     res.cookie('auth_token', token, {
       httpOnly: true,
       secure: envLevel === 'development' ? false : true,
-      sameSite: 'none',
+      sameSite: envLevel === 'development' ? 'lax' : 'none', // 'lax' for dev, 'none' for prod
       maxAge: 14 * 24 * 60 * 60, // 14 Days
     })
 

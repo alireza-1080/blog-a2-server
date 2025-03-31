@@ -16,16 +16,19 @@ const isTokenValid = (req: Request, res: Response, next: NextFunction) => {
   }
 
   const auth_token = req.auth_token
-  console.log('isTokenValid_Token',auth_token)
-  console.log('isTokenValid_secret',jwtSecret)
+  console.log('isTokenValid_Token', auth_token)
+  console.log('isTokenValid_secret', jwtSecret)
 
   if (auth_token && jwtSecret) {
     jwt.verify(auth_token, jwtSecret, (error, decoded) => {
-        if (error) {
-            return console.log(error.message)
-        }
+      if (error) {
+        return console.log(error.message)
+      }
 
-        console.log(decoded)
+      req.isTokenValid = true
+      if (decoded && decoded.sub) {
+        req.userId = decoded.sub as string
+      }
     })
   }
 }
