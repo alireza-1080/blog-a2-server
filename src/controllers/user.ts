@@ -128,8 +128,6 @@ const userLogin = async (req: Request<object, object, z.infer<typeof loginUserSc
 
     const token = generateToken(user.id)
 
-    console.log(token)
-
     res.cookie('auth_token', token, {
       httpOnly: true,
       secure: envLevel === "development" ? false : true,
