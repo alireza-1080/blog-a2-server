@@ -61,7 +61,6 @@ const createUser = async (
     })
 
     const token = generateToken(user.id)
-    console.log(token)
 
     res.cookie('auth_token', token, {
       httpOnly: true,

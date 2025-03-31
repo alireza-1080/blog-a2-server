@@ -16,8 +16,6 @@ const isTokenValid = (req: Request, res: Response, next: NextFunction) => {
   }
 
   const auth_token = req.auth_token
-  console.log('isTokenValid_Token', auth_token)
-  console.log('isTokenValid_secret', jwtSecret)
 
   if (auth_token && jwtSecret) {
     jwt.verify(auth_token, jwtSecret, (error, decoded) => {
@@ -31,6 +29,8 @@ const isTokenValid = (req: Request, res: Response, next: NextFunction) => {
       }
     })
   }
+
+  return next()
 }
 
 export default isTokenValid
