@@ -70,7 +70,8 @@ const loginUserSchema = z.object({
       {
         message: 'Identifier must be a valid username or email',
       }
-    ),
+    )
+    .transform((identifier) => identifier.toLocaleLowerCase()),
   password: z
     .string({
       invalid_type_error: 'Password should ba a string',
