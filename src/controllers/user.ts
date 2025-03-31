@@ -66,7 +66,7 @@ const createUser = async (
       httpOnly: true,
       secure: envLevel === 'development' ? false : true,
       sameSite: envLevel === 'development' ? 'lax' : 'none', // 'lax' for dev, 'none' for prod
-      maxAge: 14 * 24 * 60 * 60, // 14 Days
+      maxAge: 14 * 24 * 60 * 60 * 1000, // 14 Days
     })
 
     res.json({ message: 'User is successfully registered' })
@@ -131,7 +131,7 @@ const userLogin = async (req: Request<object, object, z.infer<typeof loginUserSc
       httpOnly: true,
       secure: envLevel === 'development' ? false : true,
       sameSite: envLevel === 'development' ? 'lax' : 'none', // 'lax' for dev, 'none' for prod
-      maxAge: 14 * 24 * 60 * 60, // 14 Days
+      maxAge: 14 * 24 * 60 * 60 * 1000, // 14 Days
     })
 
     res.json({ message: 'User is successfully logged in' })
@@ -150,4 +150,16 @@ const userLogin = async (req: Request<object, object, z.infer<typeof loginUserSc
   }
 }
 
-export { createUser, userLogin }
+const isUserLoggedIn = (req: Request, res: Response) => {
+  const isUserLoggedIn = req.isTokenValid
+
+  if (!isUserLoggedIn) {
+    res.status(400).json({ isUserLoggedIn })
+    return
+  }
+
+  res.status(200).json({ isUserLoggedIn })
+  return
+}
+
+export { createUser, userLogin, isUserLoggedIn }
