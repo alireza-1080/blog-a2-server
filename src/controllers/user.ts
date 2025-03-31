@@ -1,11 +1,17 @@
 import { Request, Response } from 'express-serve-static-core'
 import { z, ZodError } from 'zod'
-import { createUserSchema } from '../schemas/user.js'
+import { createUserSchema, loginUserSchema } from '../schemas/user.js'
 import hashPassword from '../utils/hashPassword.js'
 import { prisma } from '../services/prisma.service.js'
 import { Prisma } from '@prisma/client'
 import { unlink } from 'fs/promises'
 import generateToken from '../utils/generateToke.js'
+import comparePassword from '../utils/comparePassword.js'
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+const envLevel = process.env.ENV_LEVEL
 
 const createUser = async (
   req: Request<object, object, z.infer<typeof createUserSchema> & { confirmPassword: string }>,
@@ -59,12 +65,12 @@ const createUser = async (
 
     res.cookie('auth_token', token, {
       httpOnly: true,
-      secure: true,
+      secure: envLevel === "development" ? false : true,
       sameSite: 'none',
       maxAge: 14 * 24 * 60 * 60, // 14 Days
     })
 
-    res.json({ message: 'User is successfully registered', user })
+    res.json({ message: 'User is successfully registered' })
   } catch (error) {
     // Delete avatar if it's available
     if (req.file) {
@@ -98,4 +104,53 @@ const createUser = async (
   }
 }
 
-export { createUser }
+const userLogin = async (req: Request<object, object, z.infer<typeof loginUserSchema>>, res: Response) => {
+  try {
+    const { identifier, password } = req.body
+
+    const zodValidatedCredentials = loginUserSchema.parse({ identifier, password })
+
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [{ email: zodValidatedCredentials.identifier }, { username: zodValidatedCredentials.identifier }],
+      },
+    })
+
+    if (!user) {
+      throw new Error('Invalid credentials')
+    }
+
+    const isPasswordValid = await comparePassword(password, user.password)
+
+    if (!isPasswordValid) {
+      throw new Error('Invalid credentials')
+    }
+
+    const token = generateToken(user.id)
+
+    console.log(token)
+
+    res.cookie('auth_token', token, {
+      httpOnly: true,
+      secure: envLevel === "development" ? false : true,
+      sameSite: 'none',
+      maxAge: 14 * 24 * 60 * 60, // 14 Days
+    })
+
+    res.json({ message: 'User is successfully logged in' })
+  } catch (error) {
+    // Handle zod validation errors
+    if (error instanceof ZodError) {
+      res.status(400).json({ error: error.issues[0].message })
+      return
+    }
+
+    if (error instanceof Error) {
+      console.log(error.message)
+      res.status(400).json({ error: error.message })
+      return
+    }
+  }
+}
+
+export { createUser, userLogin }
