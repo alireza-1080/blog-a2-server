@@ -162,4 +162,11 @@ const isUserLoggedIn = (req: Request, res: Response) => {
   return
 }
 
-export { createUser, userLogin, isUserLoggedIn }
+const userLogout = (req: Request, res: Response) => {
+  res.clearCookie('auth_token')
+  res.status(200).json({
+    message: 'User Logged out successfully',
+  })
+}
+
+export { createUser, userLogin, isUserLoggedIn, userLogout }
