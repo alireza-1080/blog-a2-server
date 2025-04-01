@@ -14,11 +14,12 @@ datasource db {
 }
 
 model BlogPost {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  title    String @unique
-  content  String
-  imageUrl String
-  authorId String
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  title     String @unique
+  content   String
+  image     String
+  imagePath String
+  authorId  String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
