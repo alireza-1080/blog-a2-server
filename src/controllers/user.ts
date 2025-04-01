@@ -169,4 +169,43 @@ const userLogout = (req: Request, res: Response) => {
   })
 }
 
-export { createUser, userLogin, isUserLoggedIn, userLogout }
+const userGetMe = async (req: Request, res: Response) => {
+  try {
+    const isTokenValid = req.isTokenValid
+
+    if (!isTokenValid) {
+      throw new Error('User is not logged in')
+    }
+
+    const userId = req.userId
+
+    if (!userId) {
+      throw new Error('User is not logged in')
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+        email: true,
+        image: true,
+        role: true,
+        username: true,
+      },
+    })
+
+    if (!user) {
+      throw new Error('User is not logged in')
+    }
+
+    res.status(200).json({ user })
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(400).json({ error: error.message })
+    }
+  }
+}
+
+export { createUser, userLogin, isUserLoggedIn, userLogout, userGetMe }
