@@ -30,7 +30,7 @@ const createArticle = async (req: Request<object, object, CreateArticleType>, re
     }
 
     const { title, content } = req.body
-
+    console.log({ title, content })
     const { success, data, error } = articleSchema.safeParse({ title, content })
 
     if (!success) {
@@ -38,7 +38,7 @@ const createArticle = async (req: Request<object, object, CreateArticleType>, re
     }
 
     const file = req.file
-
+    console.log(file)
     if (!file) {
       throw new Error('Article image is required')
     }
