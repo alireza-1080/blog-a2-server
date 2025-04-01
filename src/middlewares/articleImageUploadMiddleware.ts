@@ -23,6 +23,8 @@ const articleImageUploadMiddleware = (req: Request, res: Response, next: NextFun
       }
     }
 
+    console.log(err)
+
     next()
   })
 }
