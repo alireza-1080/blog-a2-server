@@ -1,6 +1,6 @@
 import { Request, Response } from 'express-serve-static-core'
 import { prisma } from '../services/prisma.service.js'
-import articleSchema from '../schemas/articleSchema.js'
+import articleSchema from '../schemas/article.js'
 import { unlink } from 'fs/promises'
 import { Prisma } from '@prisma/client'
 
