@@ -45,7 +45,7 @@ const createArticle = async (req: Request<object, object, CreateArticleType>, re
 
     const { path, filename } = file
     const imagePath = path
-    const image = `articlesAvatars/${filename}`
+    const image = `articlesImages/${filename}`
 
     await prisma.blogPost.create({
       data: {

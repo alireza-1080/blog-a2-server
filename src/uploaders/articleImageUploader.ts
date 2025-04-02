@@ -3,7 +3,7 @@ import path from 'path'
 import { Request } from 'express'
 import fs from 'fs'
 
-const uploadDir = '/public/articlesImages'
+const uploadDir = 'public/articlesImages'
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true })
