@@ -79,4 +79,53 @@ const createArticle = async (req: Request<object, object, CreateArticleType>, re
   }
 }
 
-export { createArticle }
+const getArticlesByUserId = async (req: Request, res: Response) => {
+  try {
+    const isTokenValid = req.isTokenValid
+    
+    if (!isTokenValid) {
+      throw new Error(`User is not logged in`)
+    }
+
+    const userId = req.userId
+    
+    if (!userId) {
+      throw new Error(`User is not logged in`)
+    }
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId
+      },
+      select: {
+        username: true,
+        role: true,
+        image: true,
+        id: true,
+      },
+    })
+    
+    if (!user) {
+      throw new Error(`User is not logged in`)
+    }
+    
+    const posts = await prisma.blogPost.findMany()
+    
+    const target = await prisma.blogPost.findMany({
+      where: {
+        authorId: userId
+      }
+    })
+    
+    console.log(posts)
+    console.log(posts[0].authorId === userId)
+    console.log(target)
+    
+    res.json(0)
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(400).json({ error: error.message })
+    }
+  }
+}
+
+export { createArticle, getArticlesByUserId }
