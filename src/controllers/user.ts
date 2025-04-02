@@ -150,16 +150,33 @@ const userLogin = async (req: Request<object, object, z.infer<typeof loginUserSc
   }
 }
 
-const isUserLoggedIn = (req: Request, res: Response) => {
-  const isUserLoggedIn = req.isTokenValid
+const isUserLoggedIn = async (req: Request, res: Response) => {
+  try {
+    const isUserLoggedIn = req.isTokenValid
 
-  if (!isUserLoggedIn) {
-    res.status(400).json({ isUserLoggedIn })
+    if (!isUserLoggedIn) {
+      throw new Error('error')
+    }
+
+    const userId = req.userId
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    })
+
+    if (!user) {
+      throw new Error('error')
+    }
+
+    res.status(200).json({ isUserLoggedIn })
     return
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(400).json({ isUserLoggedIn: false })
+    }
   }
-
-  res.status(200).json({ isUserLoggedIn })
-  return
 }
 
 const userLogout = (req: Request, res: Response) => {
