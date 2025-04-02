@@ -4,24 +4,12 @@ import cors from 'cors'
 import helmet from 'helmet'
 import apiRouter from './routes/api.js'
 import cookieParser from 'cookie-parser'
-import { CorsOptions } from 'cors'
+import corsOptions from './utils/corsDependencies.js'
+import checkOrCreatePublicFolder from './utils/checkOrCreatePublicFolder.js'
 
 const app = express()
-const allowedOrigins = ['https://blog-a2.vercel.app', 'http://localhost:3000', 'https://blog-a2-server.up.railway.app']
-const corsOptions: CorsOptions = {
-  origin: (origin: string | undefined, cb: (error: Error | null, allow?: boolean) => void) => {
-    if (!origin) {
-      return cb(null, true)
-    }
 
-    if (allowedOrigins.indexOf(origin as string) !== -1) {
-      cb(null, true)
-    } else {
-      cb(new Error('Not allowed by CORS'))
-    }
-  },
-  credentials: true,
-}
+checkOrCreatePublicFolder()
 
 app.use(cors(corsOptions))
 app.use(helmet())
