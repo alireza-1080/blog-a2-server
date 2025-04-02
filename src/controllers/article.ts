@@ -116,6 +116,7 @@ const getArticlesByUserId = async (req: Request, res: Response) => {
         title: true,
         content: true,
         image: true,
+        id: true
       }
     })
 
