@@ -113,10 +113,10 @@ const getArticlesByUserId = async (req: Request, res: Response) => {
         authorId: userId
       },
       select: {
+        id: true,
         title: true,
         content: true,
-        image: true,
-        id: true
+        image: true
       }
     })
 
