@@ -1,10 +1,17 @@
 import multer from 'multer'
 import path from 'path'
 import { Request } from 'express-serve-static-core'
+import fs from 'fs'
+
+const uploadDir = 'public/usersAvatars'
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true })
+}
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, 'public/usersAvatars/')
+    callback(null, uploadDir)
   },
   filename(req, file, callback) {
     callback(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`)

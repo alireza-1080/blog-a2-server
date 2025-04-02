@@ -108,19 +108,22 @@ const getArticlesByUserId = async (req: Request, res: Response) => {
       throw new Error(`User is not logged in`)
     }
     
-    const posts = await prisma.blogPost.findMany()
-    
-    const target = await prisma.blogPost.findMany({
+    const posts = await prisma.blogPost.findMany({
       where: {
         authorId: userId
+      },
+      select: {
+        title: true,
+        content: true,
+        image: true,
       }
     })
+
+    const postsWithAuthor = posts.map(post => {
+      return {...post, author: user}
+    })
     
-    console.log(posts)
-    console.log(posts[0].authorId === userId)
-    console.log(target)
-    
-    res.json(0)
+    res.json({blogPosts: postsWithAuthor})
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).json({ error: error.message })
