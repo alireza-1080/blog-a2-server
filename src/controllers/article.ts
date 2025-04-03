@@ -82,19 +82,19 @@ const createArticle = async (req: Request<object, object, CreateArticleType>, re
 const getArticlesByUserId = async (req: Request, res: Response) => {
   try {
     const isTokenValid = req.isTokenValid
-    
+
     if (!isTokenValid) {
       throw new Error(`User is not logged in`)
     }
 
     const userId = req.userId
-    
+
     if (!userId) {
       throw new Error(`User is not logged in`)
     }
     const user = await prisma.user.findUnique({
       where: {
-        id: userId
+        id: userId,
       },
       select: {
         username: true,
@@ -103,31 +103,32 @@ const getArticlesByUserId = async (req: Request, res: Response) => {
         id: true,
       },
     })
-    
+
     if (!user) {
       throw new Error(`User is not logged in`)
     }
-    
+
     const posts = await prisma.blogPost.findMany({
       where: {
-        authorId: userId
+        authorId: userId,
       },
       select: {
         id: true,
         title: true,
         content: true,
-        image: true
+        image: true,
+        createdAt: true,
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: 'desc',
+      },
     })
 
-    const postsWithAuthor = posts.map(post => {
-      return {...post, author: user}
+    const postsWithAuthor = posts.map((post) => {
+      return { ...post, author: user }
     })
-    
-    res.json({blogPosts: postsWithAuthor})
+
+    res.json({ blogPosts: postsWithAuthor })
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).json({ error: error.message })
@@ -135,4 +136,83 @@ const getArticlesByUserId = async (req: Request, res: Response) => {
   }
 }
 
-export { createArticle, getArticlesByUserId }
+type GetArticleByIdRequestBody = {
+  postId: string
+}
+
+const getArticleById = async (req: Request<object, object, GetArticleByIdRequestBody>, res: Response) => {
+  try {
+    const isTokenValid = req.isTokenValid
+
+    if (!isTokenValid) {
+      throw new Error('User is not logged in')
+    }
+
+    const userId = req.userId
+
+    if (!userId) {
+      throw new Error('User is not logged in')
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        role: true,
+      },
+    })
+
+    if (!user) {
+      throw new Error('User is not logged in')
+    }
+
+    const { postId } = req.body
+
+    if (!postId) {
+      throw new Error('Post id is not provided')
+    }
+
+    const blogPost = await prisma.blogPost.findUnique({
+      where: {
+        id: postId,
+      },
+      select: {
+        id: true,
+        authorId: true,
+        content: true,
+        createdAt: true,
+        image: true,
+        title: true,
+      },
+    })
+
+    if (!blogPost) {
+      throw new Error('Post not found')
+    }
+
+    const author = await prisma.user.findUnique({
+      where: {
+        id: blogPost.authorId,
+      },
+      select: {
+        id: true,
+        image: true,
+        role: true,
+        username: true,
+      },
+    })
+
+    const post = { ...blogPost, author }
+
+    res.status(200).json({ post, userRole: user.role })
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(400).json(error.message)
+      return
+    }
+    console.log(error)
+  }
+}
+
+export { createArticle, getArticlesByUserId, getArticleById }
