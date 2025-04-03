@@ -205,7 +205,7 @@ const getArticleById = async (req: Request<object, object, GetArticleByIdRequest
 
     const post = { ...blogPost, author }
 
-    res.status(200).json({ post, userRole: user.role })
+    res.status(200).json({ post, userRole: user.role, userId })
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).json(error.message)
