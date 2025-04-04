@@ -215,4 +215,75 @@ const getArticleById = async (req: Request<object, object, GetArticleByIdRequest
   }
 }
 
-export { createArticle, getArticlesByUserId, getArticleById }
+type DeleteArticleByIdRequestBody = {
+  articleId: string
+  authorId: string
+  userId: string
+}
+
+const deleteArticleById = async (req: Request<object, object, DeleteArticleByIdRequestBody>, res: Response) => {
+  try {
+    const isTokenValid = req.isTokenValid
+
+    if (!isTokenValid) {
+      throw new Error('User is not logged in')
+    }
+
+    const userId = req.userId
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+        role: true,
+      },
+    })
+
+    if (!user) {
+      throw new Error('User is not logged in')
+    }
+
+    const { articleId } = req.body
+
+    if (!articleId) {
+      throw new Error("Article id is not provided")
+    }
+
+    const article = await prisma.blogPost.findUnique({
+      where: {
+        id: articleId,
+      },
+      select: {
+        id: true,
+        authorId: true,
+      },
+    })
+
+    if (!article) {
+      throw new Error('Article not found')
+    }
+
+    if (user.role !== 'admin' && user.id !== article.authorId) {
+      throw new Error('You are not authorized to delete the article')
+    }
+
+    await prisma.blogPost.delete({
+      where: {
+        id: article.id,
+      },
+    })
+
+    res.status(400).json({message: 'Article successfully removed from database'})
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(400).json({ error: error.message })
+      return
+    }
+
+    console.log(error)
+  }
+}
+
+export { createArticle, getArticlesByUserId, getArticleById, deleteArticleById }

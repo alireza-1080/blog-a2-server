@@ -1,5 +1,5 @@
 import e from 'express'
-import { createArticle, getArticlesByUserId, getArticleById } from '../controllers/article.js'
+import { createArticle, getArticlesByUserId, getArticleById, deleteArticleById } from '../controllers/article.js'
 import isTokenProvided from '../middlewares/isTokenProvided.js'
 import isTokenValid from '../middlewares/isTokenValid.js'
 import articleImageUploadMiddleware from '../middlewares/articleImageUploadMiddleware.js'
@@ -11,5 +11,7 @@ router.post('/create', articleImageUploadMiddleware, isTokenProvided, isTokenVal
 router.post('/get-articles-by-user-id', isTokenProvided, isTokenValid, getArticlesByUserId)
 
 router.post('/get-article-by-id', isTokenProvided, isTokenValid, getArticleById)
+
+router.delete('/delete-article-by-id', isTokenProvided, isTokenValid, deleteArticleById)
 
 export default router
