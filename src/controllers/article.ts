@@ -275,7 +275,7 @@ const deleteArticleById = async (req: Request<object, object, DeleteArticleByIdR
       },
     })
 
-    res.status(400).json({message: 'Article successfully removed from database'})
+    res.status(200).json({message: 'Article successfully removed from database'})
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).json({ error: error.message })
